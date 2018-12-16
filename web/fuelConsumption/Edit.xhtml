@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <ui:composition template="/template.xhtml">
+        <ui:define name="title">
+            <h:outputText value="#{bundle.EditFuelConsumptionTitle}"></h:outputText>
+        </ui:define>
+        <ui:define name="body">
+            <h:panelGroup id="messagePanel" layout="block">
+                <h:messages errorStyle="color: red" infoStyle="color: green" layout="table"/>
+            </h:panelGroup>
+            <h:form>
+                <h:panelGrid columns="2">
+                    <h:outputLabel value="#{bundle.EditFuelConsumptionLabel_id}" for="id" />
+                    <h:inputText id="id" value="#{fuelConsumptionController.selected.id}" title="#{bundle.EditFuelConsumptionTitle_id}" required="true" requiredMessage="#{bundle.EditFuelConsumptionRequiredMessage_id}"/>
+                    <h:outputLabel value="#{bundle.EditFuelConsumptionLabel_ticketNo}" for="ticketNo" />
+                    <h:inputText id="ticketNo" value="#{fuelConsumptionController.selected.ticketNo}" title="#{bundle.EditFuelConsumptionTitle_ticketNo}" />
+                    <h:outputLabel value="#{bundle.EditFuelConsumptionLabel_deviceId}" for="deviceId" />
+                    <h:inputText id="deviceId" value="#{fuelConsumptionController.selected.deviceId}" title="#{bundle.EditFuelConsumptionTitle_deviceId}" />
+                    <h:outputLabel value="#{bundle.EditFuelConsumptionLabel_limeageKm}" for="limeageKm" />
+                    <h:inputText id="limeageKm" value="#{fuelConsumptionController.selected.limeageKm}" title="#{bundle.EditFuelConsumptionTitle_limeageKm}" />
+                    <h:outputLabel value="#{bundle.EditFuelConsumptionLabel_fuelEntryDt}" for="fuelEntryDt" />
+                    <h:inputText id="fuelEntryDt" value="#{fuelConsumptionController.selected.fuelEntryDt}" title="#{bundle.EditFuelConsumptionTitle_fuelEntryDt}" >
+                        <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
+                    </h:inputText>
+                    <h:outputLabel value="#{bundle.EditFuelConsumptionLabel_gasRefillGals}" for="gasRefillGals" />
+                    <h:inputText id="gasRefillGals" value="#{fuelConsumptionController.selected.gasRefillGals}" title="#{bundle.EditFuelConsumptionTitle_gasRefillGals}" />
+                    <h:outputLabel value="#{bundle.EditFuelConsumptionLabel_unitCost}" for="unitCost" />
+                    <h:inputText id="unitCost" value="#{fuelConsumptionController.selected.unitCost}" title="#{bundle.EditFuelConsumptionTitle_unitCost}" />
+                    <h:outputLabel value="#{bundle.EditFuelConsumptionLabel_totalCost}" for="totalCost" />
+                    <h:inputText id="totalCost" value="#{fuelConsumptionController.selected.totalCost}" title="#{bundle.EditFuelConsumptionTitle_totalCost}" />
+                    <h:outputLabel value="#{bundle.EditFuelConsumptionLabel_expectedFuelConsumption}" for="expectedFuelConsumption" />
+                    <h:inputText id="expectedFuelConsumption" value="#{fuelConsumptionController.selected.expectedFuelConsumption}" title="#{bundle.EditFuelConsumptionTitle_expectedFuelConsumption}" />
+                    <h:outputLabel value="#{bundle.EditFuelConsumptionLabel_realConsumption}" for="realConsumption" />
+                    <h:inputText id="realConsumption" value="#{fuelConsumptionController.selected.realConsumption}" title="#{bundle.EditFuelConsumptionTitle_realConsumption}" />
+                    <h:outputLabel value="#{bundle.EditFuelConsumptionLabel_driver}" for="driver" />
+                    <h:inputTextarea rows="4" cols="30" id="driver" value="#{fuelConsumptionController.selected.driver}" title="#{bundle.EditFuelConsumptionTitle_driver}" />
+                    <h:outputLabel value="#{bundle.EditFuelConsumptionLabel_diffGals}" for="diffGals" />
+                    <h:inputText id="diffGals" value="#{fuelConsumptionController.selected.diffGals}" title="#{bundle.EditFuelConsumptionTitle_diffGals}" />
+                    <h:outputLabel value="#{bundle.EditFuelConsumptionLabel_diffPercent}" for="diffPercent" />
+                    <h:inputText id="diffPercent" value="#{fuelConsumptionController.selected.diffPercent}" title="#{bundle.EditFuelConsumptionTitle_diffPercent}" />
+                    <h:outputLabel value="#{bundle.EditFuelConsumptionLabel_diffCash}" for="diffCash" />
+                    <h:inputText id="diffCash" value="#{fuelConsumptionController.selected.diffCash}" title="#{bundle.EditFuelConsumptionTitle_diffCash}" />
+                </h:panelGrid>
+                <h:commandLink action="#{fuelConsumptionController.update}" value="#{bundle.EditFuelConsumptionSaveLink}"/>
+                <br />
+                <br />
+                <h:link outcome="View" value="#{bundle.EditFuelConsumptionViewLink}"/>
+                <br />
+                <h:commandLink action="#{fuelConsumptionController.prepareList}" value="#{bundle.EditFuelConsumptionShowAllLink}" immediate="true"/>
+                <br />
+                <br />
+                <h:link outcome="/index" value="#{bundle.EditFuelConsumptionIndexLink}" />
+            </h:form>
+        </ui:define>
+    </ui:composition>
+
+</html>

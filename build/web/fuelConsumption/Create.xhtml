@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <ui:composition template="/template.xhtml">
+        <ui:define name="title">
+            <h:outputText value="#{bundle.CreateFuelConsumptionTitle}"></h:outputText>
+        </ui:define>
+        <ui:define name="body">
+            <h:panelGroup id="messagePanel" layout="block">
+                <h:messages errorStyle="color: red" infoStyle="color: green" layout="table"/>
+            </h:panelGroup>
+            <h:form id="frmFuelEntry">
+                <h:panelGrid columns="2">
+                    <h:outputLabel value="#{bundle.CreateFuelConsumptionLabel_ticketNo}" for="ticketNo" />
+                    <h:inputText id="ticketNo" value="#{fuelConsumptionController.selected.ticketNo}" title="#{bundle.CreateFuelConsumptionTitle_ticketNo}" />
+                    <h:outputLabel value="#{bundle.CreateFuelConsumptionLabel_deviceId}" for="deviceId" />
+                    <h:inputText id="deviceId" value="#{fuelConsumptionController.selected.deviceId}" title="#{bundle.CreateFuelConsumptionTitle_deviceId}" />
+                    <h:outputLabel value="#{bundle.CreateFuelConsumptionLabel_limeageKm}" for="limeageKm" />
+                    <h:inputText id="limeageKm" value="#{fuelConsumptionController.selected.limeageKm}" title="#{bundle.CreateFuelConsumptionTitle_limeageKm}" />
+                    <h:outputLabel value="#{bundle.CreateFuelConsumptionLabel_fuelEntryDt}" for="fuelEntryDt" />
+                    <h:inputText id="fuelEntryDt" value="#{fuelConsumptionController.selected.fuelEntryDt}" title="#{bundle.CreateFuelConsumptionTitle_fuelEntryDt}" >
+                        <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
+                    </h:inputText>
+                    <h:outputLabel value="#{bundle.CreateFuelConsumptionLabel_gasRefillGals}" for="gasRefillGals" />
+                    <h:inputText id="gasRefillGals" value="#{fuelConsumptionController.selected.gasRefillGals}" title="#{bundle.CreateFuelConsumptionTitle_gasRefillGals}" />
+                    <h:outputLabel value="#{bundle.CreateFuelConsumptionLabel_unitCost}" for="unitCost" />
+                    <h:inputText id="unitCost" value="#{fuelConsumptionController.selected.unitCost}" title="#{bundle.CreateFuelConsumptionTitle_unitCost}" />
+                    <h:outputLabel value="#{bundle.CreateFuelConsumptionLabel_driver}" for="driver" />
+                    <h:inputTextarea rows="4" cols="30" id="driver" value="#{fuelConsumptionController.selected.driver}" title="#{bundle.CreateFuelConsumptionTitle_driver}" />                    
+                    
+                    <h:inputHidden id="totalCost" value="#{fuelConsumptionController.selected.totalCost}" />
+                    <h:inputHidden id="expectedFuelConsumption" value="#{fuelConsumptionController.selected.expectedFuelConsumption}" />
+                    <h:inputHidden id="realConsumption" value="#{fuelConsumptionController.selected.realConsumption}" />    
+                    <h:inputHidden id="diffGals" value="#{fuelConsumptionController.selected.diffGals}" />
+                    <h:inputHidden id="diffPercent" value="#{fuelConsumptionController.selected.diffPercent}" />
+                    <h:inputHidden id="diffCash" value="#{fuelConsumptionController.selected.diffCash}" />
+                </h:panelGrid>
+                <br />
+                <h:commandLink action="#{fuelConsumptionController.create}" value="#{bundle.CreateFuelConsumptionSaveLink}" />
+                <br />
+                <br />
+                <h:commandLink action="#{fuelConsumptionController.prepareList}" value="#{bundle.CreateFuelConsumptionShowAllLink}" immediate="true"/>
+                <br />
+                <br />
+                <h:link outcome="/index" value="#{bundle.CreateFuelConsumptionIndexLink}"/>
+            </h:form>
+        </ui:define>
+    </ui:composition>
+
+</html>

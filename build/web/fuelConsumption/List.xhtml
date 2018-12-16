@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <ui:composition template="/template.xhtml">
+        <ui:define name="title">
+            <h:outputText value="#{bundle.ListFuelConsumptionTitle}"></h:outputText>
+        </ui:define>
+        <ui:define name="body">
+            <h:form styleClass="jsfcrud_list_form">
+                <h:panelGroup id="messagePanel" layout="block">
+                    <h:messages errorStyle="color: red" infoStyle="color: green" layout="table"/>
+                </h:panelGroup>
+                <h:outputText escape="false" value="#{bundle.ListFuelConsumptionEmpty}" rendered="#{fuelConsumptionController.items.rowCount == 0}"/>
+                <h:panelGroup rendered="#{fuelConsumptionController.items.rowCount > 0}">
+                    <h:outputText value="#{fuelConsumptionController.pagination.pageFirstItem + 1}..#{fuelConsumptionController.pagination.pageLastItem + 1}/#{fuelConsumptionController.pagination.itemsCount}"/>&nbsp;
+                    <h:commandLink action="#{fuelConsumptionController.previous}" value="#{bundle.Previous} #{fuelConsumptionController.pagination.pageSize}" rendered="#{fuelConsumptionController.pagination.hasPreviousPage}"/>&nbsp;
+                    <h:commandLink action="#{fuelConsumptionController.next}" value="#{bundle.Next} #{fuelConsumptionController.pagination.pageSize}" rendered="#{fuelConsumptionController.pagination.hasNextPage}"/>&nbsp;
+                    <h:dataTable value="#{fuelConsumptionController.items}" var="item" border="0" cellpadding="2" cellspacing="0" rowClasses="jsfcrud_odd_row,jsfcrud_even_row" rules="all" style="border:solid 1px">
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListFuelConsumptionTitle_id}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.id}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListFuelConsumptionTitle_ticketNo}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.ticketNo}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListFuelConsumptionTitle_deviceId}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.deviceId}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListFuelConsumptionTitle_limeageKm}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.limeageKm}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListFuelConsumptionTitle_fuelEntryDt}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.fuelEntryDt}">
+                                <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
+                            </h:outputText>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListFuelConsumptionTitle_gasRefillGals}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.gasRefillGals}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListFuelConsumptionTitle_unitCost}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.unitCost}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListFuelConsumptionTitle_totalCost}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.totalCost}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListFuelConsumptionTitle_expectedFuelConsumption}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.expectedFuelConsumption}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListFuelConsumptionTitle_realConsumption}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.realConsumption}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListFuelConsumptionTitle_driver}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.driver}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListFuelConsumptionTitle_diffGals}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.diffGals}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListFuelConsumptionTitle_diffPercent}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.diffPercent}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListFuelConsumptionTitle_diffCash}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.diffCash}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="&nbsp;"/>
+                            </f:facet>
+                            <h:commandLink action="#{fuelConsumptionController.prepareView}" value="#{bundle.ListFuelConsumptionViewLink}"/>
+                            <h:outputText value=" "/>
+                            <h:commandLink action="#{fuelConsumptionController.prepareEdit}" value="#{bundle.ListFuelConsumptionEditLink}"/>
+                            <h:outputText value=" "/>
+                            <h:commandLink action="#{fuelConsumptionController.destroy}" value="#{bundle.ListFuelConsumptionDestroyLink}"/>
+                        </h:column>
+                    </h:dataTable>
+                </h:panelGroup>
+                <br />
+                <h:commandLink action="#{fuelConsumptionController.prepareCreate}" value="#{bundle.ListFuelConsumptionCreateLink}"/>
+                <br />
+                <br />
+                <h:link outcome="/index" value="#{bundle.ListFuelConsumptionIndexLink}"/>
+            </h:form>
+        </ui:define>
+    </ui:composition>
+
+</html>

@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <ui:composition template="/template.xhtml">
+        <ui:define name="title">
+            <h:outputText value="#{bundle.ViewFuelConsumptionTitle}"></h:outputText>
+        </ui:define>
+        <ui:define name="body">
+            <h:panelGroup id="messagePanel" layout="block">
+                <h:messages errorStyle="color: red" infoStyle="color: green" layout="table"/>
+            </h:panelGroup>
+            <h:form>
+                <h:panelGrid columns="2">
+                    <h:outputText value="#{bundle.ViewFuelConsumptionLabel_id}"/>
+                    <h:outputText value="#{fuelConsumptionController.selected.id}" title="#{bundle.ViewFuelConsumptionTitle_id}"/>
+                    <h:outputText value="#{bundle.ViewFuelConsumptionLabel_ticketNo}"/>
+                    <h:outputText value="#{fuelConsumptionController.selected.ticketNo}" title="#{bundle.ViewFuelConsumptionTitle_ticketNo}"/>
+                    <h:outputText value="#{bundle.ViewFuelConsumptionLabel_deviceId}"/>
+                    <h:outputText value="#{fuelConsumptionController.selected.deviceId}" title="#{bundle.ViewFuelConsumptionTitle_deviceId}"/>
+                    <h:outputText value="#{bundle.ViewFuelConsumptionLabel_limeageKm}"/>
+                    <h:outputText value="#{fuelConsumptionController.selected.limeageKm}" title="#{bundle.ViewFuelConsumptionTitle_limeageKm}"/>
+                    <h:outputText value="#{bundle.ViewFuelConsumptionLabel_fuelEntryDt}"/>
+                    <h:outputText value="#{fuelConsumptionController.selected.fuelEntryDt}" title="#{bundle.ViewFuelConsumptionTitle_fuelEntryDt}">
+                        <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
+                    </h:outputText>
+                    <h:outputText value="#{bundle.ViewFuelConsumptionLabel_gasRefillGals}"/>
+                    <h:outputText value="#{fuelConsumptionController.selected.gasRefillGals}" title="#{bundle.ViewFuelConsumptionTitle_gasRefillGals}"/>
+                    <h:outputText value="#{bundle.ViewFuelConsumptionLabel_unitCost}"/>
+                    <h:outputText value="#{fuelConsumptionController.selected.unitCost}" title="#{bundle.ViewFuelConsumptionTitle_unitCost}"/>
+                    <h:outputText value="#{bundle.ViewFuelConsumptionLabel_totalCost}"/>
+                    <h:outputText value="#{fuelConsumptionController.selected.totalCost}" title="#{bundle.ViewFuelConsumptionTitle_totalCost}"/>
+                    <h:outputText value="#{bundle.ViewFuelConsumptionLabel_expectedFuelConsumption}"/>
+                    <h:outputText value="#{fuelConsumptionController.selected.expectedFuelConsumption}" title="#{bundle.ViewFuelConsumptionTitle_expectedFuelConsumption}"/>
+                    <h:outputText value="#{bundle.ViewFuelConsumptionLabel_realConsumption}"/>
+                    <h:outputText value="#{fuelConsumptionController.selected.realConsumption}" title="#{bundle.ViewFuelConsumptionTitle_realConsumption}"/>
+                    <h:outputText value="#{bundle.ViewFuelConsumptionLabel_driver}"/>
+                    <h:outputText value="#{fuelConsumptionController.selected.driver}" title="#{bundle.ViewFuelConsumptionTitle_driver}"/>
+                    <h:outputText value="#{bundle.ViewFuelConsumptionLabel_diffGals}"/>
+                    <h:outputText value="#{fuelConsumptionController.selected.diffGals}" title="#{bundle.ViewFuelConsumptionTitle_diffGals}"/>
+                    <h:outputText value="#{bundle.ViewFuelConsumptionLabel_diffPercent}"/>
+                    <h:outputText value="#{fuelConsumptionController.selected.diffPercent}" title="#{bundle.ViewFuelConsumptionTitle_diffPercent}"/>
+                    <h:outputText value="#{bundle.ViewFuelConsumptionLabel_diffCash}"/>
+                    <h:outputText value="#{fuelConsumptionController.selected.diffCash}" title="#{bundle.ViewFuelConsumptionTitle_diffCash}"/>
+                </h:panelGrid>
+                <br />
+                <h:commandLink action="#{fuelConsumptionController.destroyAndView}" value="#{bundle.ViewFuelConsumptionDestroyLink}"/>
+                <br />
+                <br />
+                <h:link outcome="Edit" value="#{bundle.ViewFuelConsumptionEditLink}"/>
+                <br />
+                <h:commandLink action="#{fuelConsumptionController.prepareCreate}" value="#{bundle.ViewFuelConsumptionCreateLink}" />
+                <br />
+                <h:commandLink action="#{fuelConsumptionController.prepareList}" value="#{bundle.ViewFuelConsumptionShowAllLink}"/>
+                <br />
+                <br />
+                <h:link outcome="/index" value="#{bundle.ViewFuelConsumptionIndexLink}"/>
+
+            </h:form>
+        </ui:define>
+    </ui:composition>
+
+</html>
