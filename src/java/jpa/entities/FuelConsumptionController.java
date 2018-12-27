@@ -119,9 +119,9 @@ public class FuelConsumptionController implements Serializable {
         try {
 //            System.out.println("current: " + current);
             String strDeviceId = current.getDeviceId().toString();
-            SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/YYYY hh:mm:ss");
+            SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/YYYY HH:mm:ss");
             // add 6 hours to fuel entry date to accomodate for different API datetime
-            Date dtmCurrApiFuelEntry = addHoursToJavaUtilDate(current.getFuelEntryDt(), 6);
+            Date dtmCurrApiFuelEntry = addHoursToJavaUtilDate(current.getFuelEntryDt(), 12);
             String strFuelEntryDate = String.valueOf(sdf.format(dtmCurrApiFuelEntry));
             List lstSpaceSeparated = Arrays.asList(strFuelEntryDate.split(" "));
             String strDate = lstSpaceSeparated.get(0).toString();
@@ -155,7 +155,7 @@ public class FuelConsumptionController implements Serializable {
                 dblPrevMileageKm = Double.parseDouble(String.valueOf(objPrevFuelMileageAndRefill[0]));
                 dblPrevGasRefillGals = Double.parseDouble(String.valueOf(objPrevFuelMileageAndRefill[2]));
                 // add 5 hours to previous fuel entry date to accomodate for different API datetime
-                Date dtmPrevApiFuelEntry = addHoursToJavaUtilDate((Date)objPrevFuelMileageAndRefill[1], 6);
+                Date dtmPrevApiFuelEntry = addHoursToJavaUtilDate((Date)objPrevFuelMileageAndRefill[1], 12);
                 String strPrevFuelEntryDate = sdf.format(dtmPrevApiFuelEntry);
                 List lstSpaceSeparated2 = Arrays.asList(strPrevFuelEntryDate.split(" "));
                 String strDate2 = lstSpaceSeparated2.get(0).toString();
@@ -227,15 +227,20 @@ public class FuelConsumptionController implements Serializable {
 //            }
 //            JsonNode objLastItem = objJsonNode.get(objJsonNode.size() - 1);
 
+            strUrlWithQueries = "";
             double dblFuelIn = 0.0;
             double dblFuelOut = 0.0;
             for(int i = 0; i < objJsonNode.size(); i++) {
 //                System.out.println(objJsonNode);
-                if(objJsonNode.get(i).get("attributes").get("io136") != null) {
-                    dblFuelIn += Double.parseDouble(String.valueOf(objJsonNode.get(i).get("attributes").get("io136")));
+                if((objJsonNode.get(i).get("attributes").get("io136") != null)) {
+                    if((Double.parseDouble(String.valueOf(objJsonNode.get(i).get("attributes").get("io136")))) > 0) {
+                        dblFuelIn += Double.parseDouble(String.valueOf(objJsonNode.get(i).get("attributes").get("io136")));
+                    }
                 }
                 if(objJsonNode.get(i).get("attributes").get("io137") != null) {
-                    dblFuelOut += Double.parseDouble(String.valueOf(objJsonNode.get(i).get("attributes").get("io137")));
+                    if((Double.parseDouble(String.valueOf(objJsonNode.get(i).get("attributes").get("io137")))) > 0) {
+                        dblFuelOut += Double.parseDouble(String.valueOf(objJsonNode.get(i).get("attributes").get("io137")));
+                    }
                 }
             }
             // get attributes item and parse out io136 and io137
@@ -255,9 +260,12 @@ public class FuelConsumptionController implements Serializable {
                 if(dblFuelOut > 0.0) {
                     // Flowmeters -> (io136/kfactor)-(io137/kfactor)
                     current.setRealConsumption(((dblFuelIn / FLOWMETER1_DENOMINATOR) - (dblFuelOut / FLOWMETER2_DENOMINATOR)) / 3.785);
-                } else if (dblFuelIn > 0.0) { // only dblFuelConsumption has a value so use the nozzle fuel consumption
-                    current.setRealConsumption((dblFuelIn * NOZZLE_DENOMINATOR) / 3.785);
                 } 
+//                else if (dblFuelIn > 0.0) { // only dblFuelConsumption has a value so use the nozzle fuel consumption
+//                    current.setRealConsumption((dblFuelIn * NOZZLE_DENOMINATOR) / 3.785);
+//                } 
+                dblFuelIn = 0.0;
+                dblFuelOut = 0.0;
 
             }
                 
