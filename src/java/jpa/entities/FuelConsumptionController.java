@@ -38,7 +38,8 @@ import jpa.entities.util.JsfUtil;
 import jpa.entities.util.PaginationHelper;
 
 import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
+import java.util.Calendar;
+import java.util.Date;
 
 @Named("fuelConsumptionController")
 @SessionScoped
@@ -53,8 +54,8 @@ public class FuelConsumptionController implements Serializable {
     
     //TODO: setup an assignable vars to enter in 
     //denominators for flowmeters calculation
-    private final double FLOWMETER1_DENOMINATOR = 361.0;
-    private final double FLOWMETER2_DENOMINATOR = 409.0;
+    private final double FLOWMETER1_DENOMINATOR = 409.0;
+    private final double FLOWMETER2_DENOMINATOR = 1405.0;
     private final double NOZZLE_DENOMINATOR = 0.0003;
 
     public FuelConsumptionController() {
@@ -106,13 +107,22 @@ public class FuelConsumptionController implements Serializable {
         selectedItemIndex = -1;
         return "Create";
     }
+    
+    private Date addHoursToJavaUtilDate(Date date, int hours) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        calendar.add(Calendar.HOUR_OF_DAY, hours);
+        return calendar.getTime();
+    }
 
     public String create() {
         try {
 //            System.out.println("current: " + current);
             String strDeviceId = current.getDeviceId().toString();
             SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/YYYY hh:mm:ss");
-            String strFuelEntryDate = String.valueOf(sdf.format(current.getFuelEntryDt()));
+            // add 6 hours to fuel entry date to accomodate for different API datetime
+            Date dtmCurrApiFuelEntry = addHoursToJavaUtilDate(current.getFuelEntryDt(), 6);
+            String strFuelEntryDate = String.valueOf(sdf.format(dtmCurrApiFuelEntry));
             List lstSpaceSeparated = Arrays.asList(strFuelEntryDate.split(" "));
             String strDate = lstSpaceSeparated.get(0).toString();
             String strTime = lstSpaceSeparated.get(1).toString();
@@ -130,17 +140,23 @@ public class FuelConsumptionController implements Serializable {
                     strSeconds +"Z";               
             
             // build out url with query parameters
-            //TODO: query db to get last row with fuel entry date and last mileageKm
-            Object[] objPrevFuelAndMileage = retrieveLastFuelEntryDateAndMileage();
+            //TODO: query db to get lasƒt row with fuel entry date and last mileageKm
+            Object[] objPrevFuelMileageAndRefill = retrieveLastFuelEntryDateAndMileage();
             double dblPrevMileageKm;
-            String strPrevFuelEntryDate;
+            double dblPrevGasRefillGals;
             String strApiPrevFormattedTimestamp;
-            if(objPrevFuelAndMileage == null) {
-                dblPrevMileageKm = current.getLimeageKm();
+            boolean isFirstFuelEntry = false;
+            if(objPrevFuelMileageAndRefill == null) {
+                isFirstFuelEntry = true;
+                dblPrevMileageKm = Double.parseDouble(String.valueOf(current.getLimeageKm())); // 1000
+                dblPrevGasRefillGals = 0.0;
                 strApiPrevFormattedTimestamp = strApiCurrFormattedTimestamp;
             } else {
-                dblPrevMileageKm = Double.parseDouble(String.valueOf(objPrevFuelAndMileage[1]));
-                strPrevFuelEntryDate = String.valueOf(sdf.format(objPrevFuelAndMileage[0]));
+                dblPrevMileageKm = Double.parseDouble(String.valueOf(objPrevFuelMileageAndRefill[0]));
+                dblPrevGasRefillGals = Double.parseDouble(String.valueOf(objPrevFuelMileageAndRefill[2]));
+                // add 5 hours to previous fuel entry date to accomodate for different API datetime
+                Date dtmPrevApiFuelEntry = addHoursToJavaUtilDate((Date)objPrevFuelMileageAndRefill[1], 6);
+                String strPrevFuelEntryDate = sdf.format(dtmPrevApiFuelEntry);
                 List lstSpaceSeparated2 = Arrays.asList(strPrevFuelEntryDate.split(" "));
                 String strDate2 = lstSpaceSeparated2.get(0).toString();
                 String strTime2 = lstSpaceSeparated2.get(1).toString();    
@@ -186,46 +202,80 @@ public class FuelConsumptionController implements Serializable {
                     new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
             String lineRead;
             String strJson = "";
+            // TODO: doesn't need while loop
             while((lineRead = httpResponseReader.readLine()) != null) {
 //                System.out.println(lineRead);
                 strJson += lineRead;
             }
-            System.out.println("strJson: " + strJson);
+//            System.out.println("strJson: " + strJson);
             //calculate  and set total cost
             current.setTotalCost(current.getGasRefillGals() * current.getUnitCost());
             
             ObjectMapper objMapper = new ObjectMapper();       
             JsonNode objJsonNode = objMapper.readTree(strJson);
-            JsonNode objLastItem = objJsonNode.get(objJsonNode.size() - 1);
-            for(Object objItem : objLastItem) {
-                System.out.println(objItem);
+            
+            // iterate through all attributes and add up FC-Gas and FC-Diesel values
+//            double dblFuelConsumption = 0.0;
+//            double dblDieselConsumption = 0.0;
+//            for(int i = 0; i < objJsonNode.size(); i++) {
+//                if(objJsonNode.get(i).get("attributes").get("fc-gas") != null) {
+//                    dblFuelConsumption += objJsonNode.get(i).get("attributes").get("fc-gas").asDouble();
+//                }
+//                if(objJsonNode.get(i).get("attributes").get("fc-diesel") != null) {
+//                    dblDieselConsumption += objJsonNode.get("attributes").get("fc-diesel").asDouble();
+//                }
+//            }
+//            JsonNode objLastItem = objJsonNode.get(objJsonNode.size() - 1);
+
+            double dblFuelIn = 0.0;
+            double dblFuelOut = 0.0;
+            for(int i = 0; i < objJsonNode.size(); i++) {
+//                System.out.println(objJsonNode);
+                if(objJsonNode.get(i).get("attributes").get("io136") != null) {
+                    dblFuelIn += Double.parseDouble(String.valueOf(objJsonNode.get(i).get("attributes").get("io136")));
+                }
+                if(objJsonNode.get(i).get("attributes").get("io137") != null) {
+                    dblFuelOut += Double.parseDouble(String.valueOf(objJsonNode.get(i).get("attributes").get("io137")));
+                }
             }
             // get attributes item and parse out io136 and io137
-            double dblFuelVal1 = objLastItem.get("attributes").get("io136") != null ?
-                    objLastItem.get("attributes").get("io136").asDouble() : -1.0;
-            double dblFuelVal2 = objLastItem.get("attributes").get("io137") != null 
-                    ? objLastItem.get("attributes").get("io137").asDouble() : -1.0;
-            
-            //calculate & set expected fuel consumption (currFillupKm - prevFillupKm) / 100)
-            current.setExpectedFuelConsumption(current.getLimeageKm() - dblPrevMileageKm / 100.0);
-                                     
-            // calculate and set real fuel consumption by either nozzle 
-            // crocodile or flowmeters
-            if(dblFuelVal1 > 0.0 && dblFuelVal2 > 0.0) {
-                // Flowmeters -> (io136/kfactor)-(io137/kfactor)
-                current.setRealConsumption((dblFuelVal1 / FLOWMETER1_DENOMINATOR) - (dblFuelVal2 / FLOWMETER2_DENOMINATOR));
-            } else { // only dblFuelCal1 has a value so use the nozzle denominator
-                current.setRealConsumption(dblFuelVal1 * NOZZLE_DENOMINATOR);
-            }
-            
-            // calculate and set difference in gallons
-            current.setDiffGals(current.getExpectedFuelConsumption() - current.getRealConsumption());
+//            double dblFuelVal1 = objJsonNode.get("attributes").get("io136") != null ?
+//                    objJsonNode.get("attributes").get("io136").asDouble() : -1.0;
+//            double dblFuelVal2 = objJsonNode.get("attributes").get("io137") != null 
+//                    ? objJsonNode.get("attributes").get("io137").asDouble() : -1.0;
+             
+            current.setExpectedFuelConsumption(0.0);
+            current.setRealConsumption(0.0);
+            if(!isFirstFuelEntry) {
+                // (prevFillupKm - currFillupKm) / totalGallonsRefilled)
+                current.setExpectedFuelConsumption((dblPrevMileageKm - current.getLimeageKm() / current.getGasRefillGals()));
+//                current.setExpectedFuelConsumption(current.getLimeageKm() - dblPrevMileageKm / 100.0);                // calculate and set real fuel consumption by either FC-Gas or FC-diesel
+                
+                // set fuel consumption
+                if(dblFuelOut > 0.0) {
+                    // Flowmeters -> (io136/kfactor)-(io137/kfactor)
+                    current.setRealConsumption(((dblFuelIn / FLOWMETER1_DENOMINATOR) - (dblFuelOut / FLOWMETER2_DENOMINATOR)) / 3.785);
+                } else if (dblFuelIn > 0.0) { // only dblFuelConsumption has a value so use the nozzle fuel consumption
+                    current.setRealConsumption((dblFuelIn * NOZZLE_DENOMINATOR) / 3.785);
+                } 
 
-            // calculate and set fuel consumption difference percent
-            current.setDiffPercent(100.0 - ((current.getRealConsumption() *  100.0) / current.getExpectedFuelConsumption()));
-                         
-            // calculate and set fuel consumption difference in cash
-            current.setDiffCash(current.getDiffGals() * current.getUnitCost());
+            }
+                
+            if(!isFirstFuelEntry) {    
+                // calculate and set difference in gallons
+                current.setDiffGals(dblPrevGasRefillGals - current.getRealConsumption());
+
+                // calculate and set fuel consumption difference percent
+//                current.setDiffPercent(100.0 - ((current.getRealConsumption() *  100.0) / current.getExpectedFuelConsumption()));
+                current.setDiffPercent(100 * (current.getDiffGals() / current.getRealConsumption()));
+                
+                // calculate and set fuel consumption difference in cash
+                current.setDiffCash(current.getDiffGals() * current.getUnitCost());
+            } else { 
+                current.setDiffGals(0.0);
+                current.setDiffPercent(0.0);
+                current.setDiffCash(0.0);
+            }                         
             
             getFacade().create(current);
             JsfUtil.addSuccessMessage(ResourceBundle.getBundle("/Bundle").getString("FuelConsumptionCreated"));
@@ -239,7 +289,7 @@ public class FuelConsumptionController implements Serializable {
     
     private Object[] retrieveLastFuelEntryDateAndMileage() {
         Object [] arrObj = null;
-        String strSql = "SELECT fuel_entry_dt, limeage_km FROM fuel_consumption ORDER BY fuel_entry_dt DESC FETCH FIRST 1 ROWS ONLY";
+        String strSql = "SELECT limeage_km, fuel_entry_dt, gas_refill_gals  FROM fuel_consumption ORDER BY fuel_entry_dt DESC FETCH FIRST 1 ROWS ONLY";
         EntityManagerFactory objEntityMgrFactory = Persistence.createEntityManagerFactory("CostPerKmPU");
         EntityManager objEntityMgr = objEntityMgrFactory.createEntityManager();
         Query objQuery = objEntityMgr.createNativeQuery(strSql);
