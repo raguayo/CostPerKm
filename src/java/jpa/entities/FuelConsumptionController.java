@@ -35,6 +35,8 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 
 import jpa.entities.util.JsfUtil;
 import jpa.entities.util.PaginationHelper;

@@ -22,12 +22,6 @@
                     <h:dataTable value="#{fuelConsumptionController.items}" var="item" border="0" cellpadding="2" cellspacing="0" rowClasses="jsfcrud_odd_row,jsfcrud_even_row" rules="all" style="border:solid 1px">
                         <h:column>
                             <f:facet name="header">
-                                <h:outputText value="#{bundle.ListFuelConsumptionTitle_id}"/>
-                            </f:facet>
-                            <h:outputText value="#{item.id}"/>
-                        </h:column>
-                        <h:column>
-                            <f:facet name="header">
                                 <h:outputText value="#{bundle.ListFuelConsumptionTitle_ticketNo}"/>
                             </f:facet>
                             <h:outputText value="#{item.ticketNo}"/>
@@ -42,7 +36,9 @@
                             <f:facet name="header">
                                 <h:outputText value="#{bundle.ListFuelConsumptionTitle_limeageKm}"/>
                             </f:facet>
-                            <h:outputText value="#{item.limeageKm}"/>
+                            <h:outputText value="#{item.limeageKm}">
+                                <f:convertNumber maxIntegerDigits="10" maxFractionDigits="4" pattern="#########0.####" />
+                            </h:outputText>      
                         </h:column>
                         <h:column>
                             <f:facet name="header">
@@ -55,32 +51,44 @@
                         <h:column>
                             <f:facet name="header">
                                 <h:outputText value="#{bundle.ListFuelConsumptionTitle_gasRefillGals}"/>
-                            </f:facet>
-                            <h:outputText value="#{item.gasRefillGals}"/>
+                            </f:facet>                           
+                            <h:outputText value="#{item.gasRefillGals}">
+                                <f:convertNumber maxIntegerDigits="10" maxFractionDigits="4" pattern="#########0.####" />
+                            </h:outputText>
                         </h:column>
                         <h:column>
                             <f:facet name="header">
                                 <h:outputText value="#{bundle.ListFuelConsumptionTitle_unitCost}"/>
                             </f:facet>
-                            <h:outputText value="#{item.unitCost}"/>
+                            <h:outputText value="S/." />
+                            <h:outputText value="#{item.unitCost}">
+                                <f:convertNumber maxIntegerDigits="10" maxFractionDigits="2" pattern="#########0.00" />
+                            </h:outputText>                              
                         </h:column>
                         <h:column>
                             <f:facet name="header">
                                 <h:outputText value="#{bundle.ListFuelConsumptionTitle_totalCost}"/>
                             </f:facet>
-                            <h:outputText value="#{item.totalCost}"/>
+                            <h:outputText value="S/." />
+                            <h:outputText value="#{item.totalCost}">
+                                <f:convertNumber maxIntegerDigits="10" maxFractionDigits="2" pattern="#########0.00" />
+                            </h:outputText>   
                         </h:column>
                         <h:column>
                             <f:facet name="header">
                                 <h:outputText value="#{bundle.ListFuelConsumptionTitle_expectedFuelConsumption}"/>
                             </f:facet>
-                            <h:outputText value="#{item.expectedFuelConsumption}"/>
+                            <h:outputText value="#{item.expectedFuelConsumption}">
+                                <f:convertNumber maxIntegerDigits="10" maxFractionDigits="4" pattern="#########0.####" />
+                            </h:outputText>                               
                         </h:column>
                         <h:column>
                             <f:facet name="header">
                                 <h:outputText value="#{bundle.ListFuelConsumptionTitle_realConsumption}"/>
                             </f:facet>
-                            <h:outputText value="#{item.realConsumption}"/>
+                            <h:outputText value="#{item.realConsumption}">
+                                <f:convertNumber maxIntegerDigits="10" maxFractionDigits="4" pattern="#########0.####" />
+                            </h:outputText>   
                         </h:column>
                         <h:column>
                             <f:facet name="header">
@@ -92,19 +100,26 @@
                             <f:facet name="header">
                                 <h:outputText value="#{bundle.ListFuelConsumptionTitle_diffGals}"/>
                             </f:facet>
-                            <h:outputText value="#{item.diffGals}"/>
+                            <h:outputText value="#{item.diffGals}">
+                                <f:convertNumber maxIntegerDigits="10" maxFractionDigits="4" pattern="#########0.####" />
+                            </h:outputText>                              
                         </h:column>
                         <h:column>
                             <f:facet name="header">
                                 <h:outputText value="#{bundle.ListFuelConsumptionTitle_diffPercent}"/>
                             </f:facet>
-                            <h:outputText value="#{item.diffPercent}"/>
+                            <h:outputText value="#{item.diffPercent}">
+                                <f:convertNumber maxIntegerDigits="10" maxFractionDigits="2" pattern="#########0.##%" />
+                            </h:outputText>                        
                         </h:column>
                         <h:column>
                             <f:facet name="header">
                                 <h:outputText value="#{bundle.ListFuelConsumptionTitle_diffCash}"/>
                             </f:facet>
-                            <h:outputText value="#{item.diffCash}"/>
+                            <h:outputText value="S/." />
+                            <h:outputText value="#{item.diffCash}">
+                                <f:convertNumber maxIntegerDigits="10" maxFractionDigits="2" pattern="#########0.00" />
+                            </h:outputText>   
                         </h:column>
                         <h:column>
                             <f:facet name="header">
